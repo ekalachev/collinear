@@ -61,9 +61,7 @@ public class Point implements Comparable<Point> {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
 
-        double result = (double) (that.y - this.y) / (that.x - this.x);
-
-        return result;
+        return (double) (that.y - this.y) / (that.x - this.x);
     }
 
     /**
@@ -80,11 +78,12 @@ public class Point implements Comparable<Point> {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
 
-        if (this.y < that.y || (this.y == that.y && this.x < that.x)) {
-            return -1;
-        }
         if (this.y == that.y && this.x == that.x) {
             return 0;
+        }
+        
+        if (this.y < that.y || (this.y == that.y && this.x < that.x)) {
+            return -1;
         }
 
         return 1;
@@ -97,7 +96,23 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        /* YOUR CODE HERE */
+        return new PointsComparator(this);
+    }
+
+    private class PointsComparator implements Comparator<Point> {
+        private final Point current;
+
+        public PointsComparator(Point current) {
+            this.current = current;
+        }
+
+        @Override
+        public int compare(Point p, Point q) {
+            double pSlope = this.current.slopeTo(p);
+            double qSlope = this.current.slopeTo(q);
+
+            return Double.compare(pSlope, qSlope);
+        }
     }
 
 
