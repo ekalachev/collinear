@@ -24,7 +24,6 @@ public class Point implements Comparable<Point> {
      * @param y the <em>y</em>-coordinate of the point
      */
     public Point(int x, int y) {
-        /* DO NOT MODIFY */
         this.x = x;
         this.y = y;
     }
@@ -33,7 +32,6 @@ public class Point implements Comparable<Point> {
      * Draws this point to standard draw.
      */
     public void draw() {
-        /* DO NOT MODIFY */
         StdDraw.point(x, y);
     }
 
@@ -43,7 +41,6 @@ public class Point implements Comparable<Point> {
      * @param that the other point
      */
     public void drawTo(Point that) {
-        /* DO NOT MODIFY */
         StdDraw.line(this.x, this.y, that.x, that.y);
     }
 
@@ -60,6 +57,18 @@ public class Point implements Comparable<Point> {
     public double slopeTo(Point that) {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
+
+        // if two points are equal
+        if (that.x == this.x && that.y == this.y)
+            return Double.NEGATIVE_INFINITY;
+
+        // if two points are horisontal line
+        if (that.y == this.y)
+            return 0;
+
+        // if two points are vertical line
+        if (that.x == this.x)
+            return Double.POSITIVE_INFINITY;
 
         return (double) (that.y - this.y) / (that.x - this.x);
     }
@@ -78,13 +87,11 @@ public class Point implements Comparable<Point> {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
 
-        if (this.y == that.y && this.x == that.x) {
+        if (that.x == this.x && that.y == this.y)
             return 0;
-        }
-        
-        if (this.y < that.y || (this.y == that.y && this.x < that.x)) {
+
+        if (this.y < that.y || (this.y == that.y && this.x < that.x))
             return -1;
-        }
 
         return 1;
     }
@@ -123,7 +130,6 @@ public class Point implements Comparable<Point> {
      * @return a string representation of this point
      */
     public String toString() {
-        /* DO NOT MODIFY */
         return "(" + x + ", " + y + ")";
     }
 
@@ -131,6 +137,6 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        /* YOUR CODE HERE */
+
     }
 }
