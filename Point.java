@@ -58,13 +58,14 @@ public class Point implements Comparable<Point> {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
 
-        // if two points are equal
-        if (that.x == this.x && that.y == this.y)
-            return Double.NEGATIVE_INFINITY;
+        if (that.y == this.y) {
+            // if two points are equal
+            if (that.x == this.x)
+                return Double.NEGATIVE_INFINITY;
 
-        // if two points are horisontal line
-        if (that.y == this.y)
-            return 0;
+            // if two points are horisontal line
+            return +0.0;
+        }
 
         // if two points are vertical line
         if (that.x == this.x)
@@ -87,13 +88,12 @@ public class Point implements Comparable<Point> {
         if (that == null)
             throw new IllegalArgumentException("Point is null");
 
-        if (that.x == this.x && that.y == this.y)
-            return 0;
+        int difference = this.y - that.y;
 
-        if (this.y < that.y || (this.y == that.y && this.x < that.x))
-            return -1;
+        if (difference == 0)
+            difference = this.x - that.x;
 
-        return 1;
+        return difference;
     }
 
     /**
@@ -103,20 +103,14 @@ public class Point implements Comparable<Point> {
      * @return the Comparator that defines this ordering on points
      */
     public Comparator<Point> slopeOrder() {
-        return new PointsComparator(this);
+        return new PointsComparator();
     }
 
     private class PointsComparator implements Comparator<Point> {
-        private final Point current;
-
-        public PointsComparator(Point current) {
-            this.current = current;
-        }
-
         @Override
         public int compare(Point p, Point q) {
-            double pSlope = this.current.slopeTo(p);
-            double qSlope = this.current.slopeTo(q);
+            double pSlope = slopeTo(p);
+            double qSlope = slopeTo(q);
 
             return Double.compare(pSlope, qSlope);
         }

@@ -10,8 +10,6 @@
  *
  ******************************************************************************/
 
-import edu.princeton.cs.algs4.StdOut;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -66,27 +64,5 @@ public class BruteCollinearPoints {
     // the line segments
     public LineSegment[] segments() {
         return Arrays.copyOf(segments, segments.length);
-    }
-
-    public static void main(String[] args) {
-        Point[] points = new Point[] {
-                new Point(1, 1),
-                new Point(2, 4),
-                new Point(4, 2),
-                new Point(43, 70),
-                new Point(3, 3),
-                new Point(1, 5),
-                new Point(6, 30),
-                new Point(2, 2),
-                new Point(4, 4),
-                new Point(4, 7),
-                new Point(7, 20)
-        };
-
-        BruteCollinearPoints bcp = new BruteCollinearPoints(points);
-
-        for (LineSegment ls : bcp.segments()) {
-            StdOut.println(ls.toString());
-        }
     }
 }
