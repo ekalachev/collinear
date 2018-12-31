@@ -1,5 +1,5 @@
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 /******************************************************************************
  *
@@ -13,58 +13,66 @@ import java.util.HashMap;
  ******************************************************************************/
 
 public class FastCollinearPoints {
-    private LineSegment[] segments;
+    private final LineSegment[] segments;
 
     // finds all line segments containing 4 or more points
     public FastCollinearPoints(Point[] points) {
         if (points == null)
             throw new IllegalArgumentException("Array of points is null");
 
-        checkDuplicated(points);
+        checkOnNullEntrypoint(points);
 
-        HashMap<Double, LineSegment> found = new HashMap<Double, LineSegment>();
+        Point[] cPoints = points.clone();
 
         // sort points by XY
-        Arrays.sort(points);
+        Arrays.sort(cPoints);
 
-        for (int i = 0; i < points.length; i++) {
-            findSegments(points[i], Arrays.copyOfRange(points, i + 1, points.length), found);
-        }
+        checkDuplicated(cPoints);
 
-        segments = found.values().toArray(new LineSegment[0]);
+        segments = findSegments(cPoints);
     }
 
-    private void findSegments(Point p, Point[] points, HashMap<Double, LineSegment> found) {
-        Arrays.sort(points, p.slopeOrder());
+    // find segments without duplicates
+    private LineSegment[] findSegments(Point[] cPoints) {
+        ArrayList<LineSegment> foundSegments = new ArrayList<LineSegment>();
 
-        int slopesOfSegmentLength = 1;
-        double previousSlope = 0.0;
+        for (int i = 0; i < cPoints.length - 3; i++) {
+            Arrays.sort(cPoints);
 
-        for (int i = 0; i < points.length; i++) {
-            double slopePQ = p.slopeTo(points[i]);
+            Arrays.sort(cPoints, cPoints[i].slopeOrder());
 
-            // if end of array or PQ1 != PQ2
-            if (i == points.length - 1 || slopePQ != p.slopeTo(points[i + 1])) {
-                if (slopesOfSegmentLength >= 3 && !found.containsKey(previousSlope)) {
-                    found.put(previousSlope, new LineSegment(p, points[i]));
+            for (int p = 0, first = 1, last = 2; last < cPoints.length;) {
+                while (last < cPoints.length &&
+                        Double.compare(cPoints[p].slopeTo(cPoints[first]),
+                                       cPoints[p].slopeTo(cPoints[last])) == 0) {
+                    last++;
                 }
 
-                slopesOfSegmentLength = 1;
+                if (last - first >= 3 && cPoints[p].compareTo(cPoints[first]) < 0) {
+                    foundSegments.add(new LineSegment(cPoints[p], cPoints[last - 1]));
+                }
+
+                first = last;
+                last++;
             }
-            else {
-                slopesOfSegmentLength++;
-                previousSlope = slopePQ;
-            }
+        }
+
+        return foundSegments.toArray(new LineSegment[0]);
+    }
+
+    // checks that sequence has not null entry point
+    private void checkOnNullEntrypoint(Point[] points) {
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new IllegalArgumentException("Sequence has null entry point");
         }
     }
 
     // checks duplicates in array
     private void checkDuplicated(Point[] points) {
         for (int i = 0; i < points.length - 1; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].compareTo(points[j]) == 0) {
-                    throw new IllegalArgumentException("Sequence contains duplicates");
-                }
+            if (points[i].compareTo(points[i + 1]) == 0) {
+                throw new IllegalArgumentException("Sequence contains duplicates");
             }
         }
     }

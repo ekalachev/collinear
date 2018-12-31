@@ -14,29 +14,34 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class BruteCollinearPoints {
-    private LineSegment[] segments;
+    private final LineSegment[] segments;
 
     // finds all line segments containing 4 points
     public BruteCollinearPoints(Point[] points) {
         if (points == null)
             throw new IllegalArgumentException("Array of points is null");
 
-        checkDuplicated(points);
+        checkOnNullEntrypoint(points);
 
-        Arrays.sort(points);
+        Point[] cPoints = points.clone();
+
+        Arrays.sort(cPoints);
+
+        checkDuplicated(cPoints);
 
         ArrayList<LineSegment> found = new ArrayList<LineSegment>();
 
-        for (int p1 = 0; p1 < points.length - 3; p1++) {
-            for (int p2 = p1 + 1; p2 < points.length - 2; p2++) {
-                for (int p3 = p2 + 1; p3 < points.length - 1; p3++) {
-                    for (int p4 = p3 + 1; p4 < points.length; p4++) {
-                        double sloopP1P2 = points[p1].slopeTo(points[p2]);
-                        double sloopP1P3 = points[p1].slopeTo(points[p3]);
-                        double sloopP1P4 = points[p1].slopeTo(points[p4]);
+        for (int p1 = 0; p1 < cPoints.length - 3; p1++) {
+            for (int p2 = p1 + 1; p2 < cPoints.length - 2; p2++) {
+                for (int p3 = p2 + 1; p3 < cPoints.length - 1; p3++) {
+                    for (int p4 = p3 + 1; p4 < cPoints.length; p4++) {
+                        double sloopP1P2 = cPoints[p1].slopeTo(cPoints[p2]);
+                        double sloopP1P3 = cPoints[p1].slopeTo(cPoints[p3]);
+                        double sloopP1P4 = cPoints[p1].slopeTo(cPoints[p4]);
 
-                        if (sloopP1P2 == sloopP1P3 && sloopP1P2 == sloopP1P4) {
-                            found.add(new LineSegment(points[p1], points[p4]));
+                        if (Double.compare(sloopP1P2, sloopP1P3) == 0
+                                && Double.compare(sloopP1P2, sloopP1P4) == 0) {
+                            found.add(new LineSegment(cPoints[p1], cPoints[p4]));
                         }
                     }
                 }
@@ -46,12 +51,17 @@ public class BruteCollinearPoints {
         segments = found.toArray(new LineSegment[0]);
     }
 
+    private void checkOnNullEntrypoint(Point[] points) {
+        for (int i = 0; i < points.length; i++) {
+            if (points[i] == null)
+                throw new IllegalArgumentException("Sequence has null entry point");
+        }
+    }
+
     private void checkDuplicated(Point[] points) {
         for (int i = 0; i < points.length - 1; i++) {
-            for (int j = i + 1; j < points.length; j++) {
-                if (points[i].compareTo(points[j]) == 0) {
-                    throw new IllegalArgumentException("Sequence contains duplicates");
-                }
+            if (points[i].compareTo(points[i + 1]) == 0) {
+                throw new IllegalArgumentException("Sequence contains duplicates");
             }
         }
     }

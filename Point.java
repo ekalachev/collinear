@@ -55,9 +55,6 @@ public class Point implements Comparable<Point> {
      * @return the slope between this point and the specified point
      */
     public double slopeTo(Point that) {
-        if (that == null)
-            throw new IllegalArgumentException("Point is null");
-
         if (that.y == this.y) {
             // if two points are equal
             if (that.x == this.x)
@@ -86,7 +83,7 @@ public class Point implements Comparable<Point> {
      */
     public int compareTo(Point that) {
         if (that == null)
-            throw new IllegalArgumentException("Point is null");
+            throw new NullPointerException("Point is null");
 
         int difference = this.y - that.y;
 
@@ -125,11 +122,5 @@ public class Point implements Comparable<Point> {
      */
     public String toString() {
         return "(" + x + ", " + y + ")";
-    }
-
-    /**
-     * Unit tests the Point data type.
-     */
-    public static void main(String[] args) {
     }
 }
