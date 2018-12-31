@@ -49,10 +49,13 @@ public class FastCollinearPoints {
                     last++;
                 }
 
+                // checks if a line eaqual 4 or longer and that zero point
+                // less then the first point to avoid duplicates
                 if (last - first >= 3 && cPoints[p].compareTo(cPoints[first]) < 0) {
                     foundSegments.add(new LineSegment(cPoints[p], cPoints[last - 1]));
                 }
 
+                // try to find next segment
                 first = last;
                 last++;
             }
