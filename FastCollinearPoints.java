@@ -41,7 +41,8 @@ public class FastCollinearPoints {
 
             Arrays.sort(cPoints, cPoints[i].slopeOrder());
 
-            for (int p = 0, first = 1, last = 2; last < cPoints.length;) {
+            int p = 0, first = 1, last = 2;
+            while (last < cPoints.length) {
                 while (last < cPoints.length &&
                         Double.compare(cPoints[p].slopeTo(cPoints[first]),
                                        cPoints[p].slopeTo(cPoints[last])) == 0) {
